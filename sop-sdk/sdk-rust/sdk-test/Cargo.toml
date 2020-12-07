@@ -1,0 +1,11 @@
+[package]
+name = "sdk-test"
+version = "0.1.0"
+authors = ["thc"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# 依赖sdk模块
+sdk = { path = "../sdk"}

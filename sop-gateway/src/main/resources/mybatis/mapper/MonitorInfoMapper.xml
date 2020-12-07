@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意：文件名必须跟Dao类名字一致，因为是根据文件名做关联。 -->
+<mapper namespace="com.gitee.sop.gateway.mapper.MonitorInfoMapper">
+
+    <insert id="saveMonitorInfoBatch">
+        INSERT INTO `monitor_info` (
+        `route_id`,
+        `name`,
+        `version`,
+        `service_id`,
+        `instance_id`,
+        `max_time`,
+        `min_time`,
+        `total_time`,
+        `total_request_count`,
+        `success_count`,
+        `error_count`)
+        VALUES
+        <foreach collection="list" item="data" separator="," >
+            (#{data.routeId},
+            #{data.name},
+            #{data.version},
+            #{data.serviceId},
+            #{data.instanceId},
+            #{data.maxTime},
+            #{data.minTime},
+            #{data.totalTime},
+            #{data.totalRequestCount},
+            #{data.successCount},
+            #{data.errorCount})
+        </foreach>
+        <![CDATA[
+        ON DUPLICATE KEY UPDATE
+            max_time = case when max_time < VALUES(max_time) then VALUES(max_time) else max_time end
+            ,min_time = case when min_time > VALUES(min_time) then VALUES(min_time) else min_time end
+            ,total_time = total_time + VALUES(total_time)
+            ,total_request_count = total_request_count + VALUES(total_request_count)
+            ,success_count = success_count + VALUES(success_count)
+            ,error_count = error_count + VALUES(error_count)
+    ]]></insert>
+
+</mapper>

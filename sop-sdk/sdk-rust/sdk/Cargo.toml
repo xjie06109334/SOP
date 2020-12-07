@@ -1,0 +1,23 @@
+[package]
+name = "sdk"
+version = "0.1.0"
+authors = ["thc"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# 时间api
+chrono = "0.4"
+# rsa库
+rsa = "0.3.0"
+# 加密库
+rust-crypto = "^0.2"
+# base64库
+base64 = "0.12.3"
+# HTTP客户端 https://github.com/seanmonstar/reqwest
+reqwest = { version = "0.10", features = ["blocking", "json"] }
+tokio = { version = "0.2", features = ["full"] }
+# 处理json https://serde.rs/
+serde = { version = "1.0.114", features = ["derive"] }
+serde_json = "1.0.56"

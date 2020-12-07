@@ -1,0 +1,24 @@
+{
+  "langList": [
+    {
+      "name": "Java"
+    },
+    {
+      "name": "C#"
+    },
+    {
+      "name": "C++"
+    },
+    {
+      "name": "Go"
+    },{
+      "name": "NodeJS"
+    },
+    {
+      "name": "Python"
+    },
+    {
+      "name": "Rust"
+    }
+  ]
+}

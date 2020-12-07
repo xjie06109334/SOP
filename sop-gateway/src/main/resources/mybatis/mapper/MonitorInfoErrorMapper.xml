@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意：文件名必须跟Dao类名字一致，因为是根据文件名做关联。 -->
+<mapper namespace="com.gitee.sop.gateway.mapper.MonitorInfoErrorMapper">
+
+    <insert id="saveMonitorInfoErrorBatch">
+        INSERT INTO `monitor_info_error` (
+        `error_id`,
+        `instance_id`,
+        `route_id`,
+        `error_msg`,
+        `error_status`,
+        `count`)
+        VALUES
+        <foreach collection="list" item="data" separator="," >
+            (#{data.errorId},
+            #{data.instanceId},
+            #{data.routeId},
+            #{data.errorMsg},
+            #{data.errorStatus},
+            #{data.count})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            error_msg = VALUES(error_msg)
+            , error_status = VALUES(error_status)
+            , `count`= `count` + VALUES(count)
+            , is_deleted = 0
+    </insert>
+
+</mapper>

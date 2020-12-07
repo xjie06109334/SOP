@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 注意：文件名必须跟Dao类名字一致，因为是根据文件名做关联。 -->
+<mapper namespace="com.gitee.sop.adminserver.mapper.MonitorInfoMapper">
+
+
+    <select id="listMonitorSummary" resultType="com.gitee.sop.adminserver.entity.MonitorSummary">
+        SELECT t.*, IFNULL(t2.unsolvedErrorCount, 0) unsolvedErrorCount
+        FROM (
+            SELECT
+            t.`service_id` serviceId,
+            CONCAT(t.name, t.version) routeId,
+            t.`name` name,
+            t.`version` version,
+            SUM(t.`max_time`) maxTime,
+            SUM(t.`min_time`) minTime,
+            SUM(t.`total_time`) totalTime,
+            SUM(t.`total_request_count`) totalRequestCount,
+            SUM(t.`success_count`) successCount,
+            SUM(t.`error_count`) errorCount,
+            SUM(t.`total_time`)/SUM(t.`total_request_count`) avgTime,
+            1 hasChildren
+            FROM
+            `monitor_info` t
+            <include refid="common.where"/>
+            GROUP BY t.service_id, t.name, t.version
+            <include refid="common.orderBy"/>
+            ) t
+        LEFT JOIN
+        (
+        SELECT route_id, count(*) unsolvedErrorCount
+        FROM monitor_info_error WHERE is_deleted=0 GROUP BY route_id
+        ) t2 on t.routeId = t2.route_id
+    </select>
+
+    <select id="listInstanceMonitorInfo" resultType="com.gitee.sop.adminserver.entity.MonitorSummary">
+        SELECT
+        t.`service_id` serviceId,
+        t.`instance_id` instanceId,
+        t.route_id routeId,
+        t.`name` name,
+        t.`version` version,
+        t.`max_time` maxTime,
+        t.`min_time` minTime,
+        t.`total_time` totalTime,
+        t.`total_request_count` totalRequestCount,
+        t.`success_count` successCount,
+        t.`error_count` errorCount,
+        IFNULL(t2.unsolvedErrorCount, 0) unsolvedErrorCount,
+        t.`total_time`/t.`total_request_count` avgTime,
+        0 hasChildren
+        FROM
+        `monitor_info` t
+        LEFT JOIN
+        (
+        SELECT instance_id, route_id, count(*) unsolvedErrorCount
+        FROM monitor_info_error WHERE is_deleted=0 GROUP BY instance_id, route_id
+        ) t2 on t.route_id = t2.route_id AND t.instance_id = t2.instance_id
+        <include refid="common.where" />
+        <include refid="common.orderBy" />
+    </select>
+
+</mapper>
